@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos Mental y Conceptual - App Delivery</title>
+    <script src="https://gojs.net/latest/release/go.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ff7e5f;
+        }
+        
+        .instructions h2 {
+            color: #ff7e5f;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .diagram-section {
+            margin-bottom: 30px;
+        }
+        
+        #diagram-container {
+            width: 100%;
+            height: 500px;
+            background-color: #2c2c44;
+            border: 3px solid #5a5d8a;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .user-color { 
+            background-color: #4CAF50; /* Verde para el modelo mental del usuario */
+        }
+        
+        .system-color { 
+            background-color: #F44336; /* Rojo para el modelo conceptual del sistema */
+        }
+        
+        .info-panel {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-box h3 {
+            color: #ff7e5f;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+        }
+        
+        .info-box li {
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .info-panel {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Modelos Mental y Conceptual - App Delivery</h1>
+            <p class="subtitle">Visualizando la diferencia entre la percepción del usuario y la complejidad del sistema</p>
+        </header>
+        
+        <div class="content">
+            <div class="instructions">
+                <h2>Instrucciones</h2>
+                <p>Haz clic en el botón para alternar entre el <strong>modelo mental</strong> del usuario (cómo cree que funciona la app) y el <strong>modelo conceptual</strong> del sistema (cómo funciona realmente).</p>
+            </div>
+            
+            <div class="diagram-section">
+                <div id="diagram-container"></div>
+                <div class="controls">
+                    <button id="toggleButton">Ver Modelo Conceptual del Sistema</button>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="color-box user-color"></div>
+                            <span>Modelo Mental del Usuario</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="color-box system-color"></div>
+                            <span>Modelo Conceptual del Sistema</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="info-box">
+                    <h3>Modelo Mental del Usuario</h3>
+                    <ul>
+                        <li>Abrir la aplicación</li>
+                        <li>Buscar un restaurante</li>
+                        <li>Elegir la comida</li>
+                        <li>Pagar</li>
+                        <li>Esperar a que llegue la comida</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Modelo Conceptual del Sistema</h3>
+                    <ul>
+                        <li>Autenticación de usuario</li>
+                        <li>Geolocalización para restaurantes cercanos</li>
+                        <li>Consulta a base de datos de menús</li>
+                        <li>Gestión del carrito de compras</li>
+                        <li>Integración con servicio de pago</li>
+                        <li>Envío de la orden al restaurante</li>
+                        <li>Asignación de un repartidor</li>
+                        <li>Seguimiento en tiempo real</li>
+                        <li>Envío de notificaciones</li>
+                        <li>Proceso de entrega y confirmación</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Interacción Hombre Máquina - Visualización de Modelos Mentales y Conceptuales</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const $ = go.GraphObject.make;
+            let diagram = $(go.Diagram, "diagram-container", {
+                layout: $(go.TreeLayout, {
+                    angle: 90,
+                    nodeSpacing: 50,
+                    layerSpacing: 80
+                }),
+                "undoManager.isEnabled": true
+            });
+
+            // Plantilla de nodos
+            diagram.nodeTemplate =
+                $(go.Node, "Auto",
+                    { 
+                        toolTip: $(go.Adornment, "Auto", 
+                            $(go.Shape, { fill: "#202020" }),
+                            $(go.TextBlock, { margin: 5, stroke: "white" }, 
+                            new go.Binding("text", "tooltip")))
+                    },
+                    $(go.Shape, "RoundedRectangle", {
+                        strokeWidth: 2,
+                        stroke: null,
+                        portId: ""
+                    }, new go.Binding("fill", "color")),
+                    $(go.TextBlock, {
+                        margin: 10,
+                        stroke: "#ffffff",
+                        font: "14px sans-serif",
+                        wrap: go.TextBlock.WrapFit,
+                        textAlign: "center"
+                    }, new go.Binding("text", "text"))
+                );
+
+            // Plantilla de enlaces
+            diagram.linkTemplate =
+                $(go.Link,
+                    { routing: go.Link.Orthogonal, corner: 10 },
+                    $(go.Shape, { strokeWidth: 2, stroke: "#777" }),
+                    $(go.Shape, { toArrow: "Standard", fill: "#777", stroke: null })
+                );
+
+            // Modelo Mental del Usuario (Delivery)
+            const userMentalModel = {
+                nodes: [
+                    { key: "open", text: "Abrir la App", color: "#4CAF50", tooltip: "El usuario simplemente abre la aplicación." },
+                    { key: "search", text: "Buscar Restaurante", color: "#4CAF50", tooltip: "Busca un restaurante que le guste." },
+                    { key: "choose", text: "Elegir Comida", color: "#4CAF50", tooltip: "Selecciona los platos que desea ordenar." },
+                    { key: "pay", text: "Pagar", color: "#4CAF50", tooltip: "Realiza el pago de su pedido." },
+                    { key: "wait", text: "Esperar Comida", color: "#4CAF50", tooltip: "Espera a que llegue su pedido." }
+                ],
+                links: [
+                    { from: "open", to: "search" },
+                    { from: "search", to: "choose" },
+                    { from: "choose", to: "pay" },
+                    { from: "pay", to: "wait" }
+                ]
+            };
+
+            // Modelo Conceptual del Sistema (Delivery)
+            const systemConceptualModel = {
+                nodes: [
+                    { key: "auth", text: "Autenticación", color: "#F44336", tooltip: "Verificación de credenciales del usuario." },
+                    { key: "geo", text: "Geolocalización", color: "#F44336", tooltip: "Determina la ubicación para mostrar restaurantes cercanos." },
+                    { key: "db_query", text: "Consulta BD Menús", color: "#F44336", tooltip: "Consulta la base de datos para mostrar menús disponibles." },
+                    { key: "cart", text: "Gestión Carrito", color: "#F44336", tooltip: "Gestiona los items en el carrito de compras." },
+                    { key: "payment", text: "Integración Pago", color: "#F44336", tooltip: "Se conecta con servicio de pago para procesar transacción." },
+                    { key: "send_order", text: "Envío Orden", color: "#F44336", tooltip: "Envía la orden al restaurante seleccionado." },
+                    { key: "assign", text: "Asignar Repartidor", color: "#F44336", tooltip: "Asigna un repartidor para la entrega." },
+                    { key: "tracking", text: "Seguimiento Tiempo Real", color: "#F44336", tooltip: "Permite seguir el pedido en tiempo real." },
+                    { key: "notifications", text: "Envío Notificaciones", color: "#F44336", tooltip: "Envía notificaciones sobre el estado del pedido." },
+                    { key: "delivery", text: "Proceso Entrega", color: "#F44336", tooltip: "Gestiona el proceso de entrega y confirmación." }
+                ],
+                links: [
+                    { from: "auth", to: "geo" },
+                    { from: "geo", to: "db_query" },
+                    { from: "db_query", to: "cart" },
+                    { from: "cart", to: "payment" },
+                    { from: "payment", to: "send_order" },
+                    { from: "send_order", to: "assign" },
+                    { from: "assign", to: "tracking" },
+                    { from: "tracking", to: "notifications" },
+                    { from: "notifications", to: "delivery" }
+                ]
+            };
+
+            // Función para alternar entre modelos
+            let isUserView = true;
+            const toggleButton = document.getElementById("toggleButton");
+
+            const updateDiagram = () => {
+                diagram.model = new go.GraphLinksModel(
+                    isUserView ? userMentalModel.nodes : systemConceptualModel.nodes,
+                    isUserView ? userMentalModel.links : systemConceptualModel.links
+                );
+                diagram.centerRect(diagram.documentBounds);
+            };
+
+            // Establecer modelo inicial
+            updateDiagram();
+
+            // Evento de clic al botón
+            toggleButton.addEventListener('click', () => {
+                isUserView = !isUserView;
+                updateDiagram();
+                toggleButton.textContent = isUserView ? "Ver Modelo Conceptual del Sistema" : "Ver Modelo Mental del Usuario";
+            });
+        });
+    </script>
+</body>
+</html>
